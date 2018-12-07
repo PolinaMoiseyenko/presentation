@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>JS and CSS animation</title>
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/beige.css">
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h2>JavaScript and CSS animations. Animation optimization</h2>
+				<p>
+					<small>Created by <a href="https://github.com/PolinaMoiseyenko">Polina Moiseyenko</a></small>
+				</p>
+			</section>
+
+			<section>
+				<section>
+					<h2>JavaScript</h2>
+					<p><small>imperative animations</small></p>
+					<aside class="notes">
+						JavaScript always gets executed by the main thread. Nonetheless, JavaScript gives you greater
+						control over animations, so you’re better off using it in some situations. While CSS is ideal for simple
+						transitions, JavaScript is recommended for animations with advanced effects such as bouncing. Animations that
+						allow the user to pause or rewind should also be animated with JavaScript. JavaScript is necessary to implement
+						certain effects like parallax scrolling. You can also use JavaScript to control CSS animations.
+					</aside>
+				</section>
+
+				<section id="fragments">
+					<h2>JavaScript Animation Tips</h2>
+					<ol>
+						<li class="fragment fade-in-then-semi-out">Use <code>requestAnimationFrame()</code></li>
+						<li class="fragment fade-in-then-semi-out">Decouple animations from events</li>
+						<li class="fragment fade-in-then-semi-out">Keep your JavaScript code concise</li>
+						<li class="fragment fade-in-then-semi-out">Don’t use jQuery</li>
+					</ol>
+					<aside class="notes">
+						1. Use requestAnimationFrame()
+						Instead of using setTimeOut() and setInterval(), use the native JavaScript method requestAnimationFrame() to
+						execute your animation code at the best time for the browser. This method chooses the appropriate frame rate for
+						the user’s device, so mobile visitors will see a different frame rate than desktop users.
+						2. Decouple animations from events
+						The code responsible for handling events such as scrolling should be kept separate from your animation code.You
+						should decouple events from the code that
+						handles requestAnimationFrame().
+						3. Keep your JavaScript code concise
+						Be wary of adding huge chunks of JavaScript to your web page. If your code becomes unwieldy, you could try using
+						web workers to execute JavaScript animations on a different thread.
+						4. Don’t use jQuery
+						Stay away from older animation libraries like jQuery.
+					</aside>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<h3>Which CSS Properties to Animate?</h3>
+					<p>Main types of CSS properties</p>
+					<ol>
+						<li>Layout properties</li>
+						<li>Paint properties</li>
+						<li>Composite properties</li>
+					</ol>
+					<aside class="notes">
+						• Layout properties - These determine the size and placement of page elements. Animations that change an
+						element’s width and height can affect the placement of other page elements, which can cause a chain reaction
+						known as “layout thrash.” Since animations that change the page layout are especially costly, they are best
+						avoided.
+						• Paint properties - These define the appearance of page elements. Making changes to properties such as color
+						requires repainting, which can be costly. That said, simple animations that require a small portion of the
+						viewport to be repainted may have a negligible impact on overall performance. Larger animations that require
+						repainting may not be worth the effort.
+						• Composite properties - Which include transform and opacity, are your best friends for creating CSS animations
+						with minimal cost. With transform, you can scale and rotate animations without affecting the page layout.
+					</aside>
+				</section>
+
+				<section>
+					<h3><a href="https://csstriggers.com/">CSS Triggers</a></h3>
+					<img src="./img/CSSTriggers.JPG" alt="CSS Triggers site interface">
+				</section>
+
+				<section>
+					<p>Good Practice</p>
+					<ol>
+						<li>position</li>
+						<li>scale</li>
+						<li>rotation</li>
+						<li>opacity</li>
+					</ol>
+					<aside class="notes">You can do almost everything using these four options that you can using layout properties
+						without affecting the positioning of other page elements. For example, to change the size of an image, use
+						scale() rather than width().</aside>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<h2>CSS</h2>
+					<p><small>declarative animations</small></p>
+					<ol>
+						<li>Animation</li>
+						<li>Transition</li>
+					</ol>
+					<aside class="notes">
+						CSS animations are handled by the browser’s compositor thread rather than the main thread
+						responsible for painting and styling. Consequently, such animations are unaffected by the main thread’s more
+						expensive tasks. Of course, animations that trigger the paint or layout events will require work from the main
+						thread, which negates the benefits of using CSS animations.
+					</aside>
+				</section>
+
+				<section id="fragments">
+					<h2>CSS Animation Tips</h2>
+					<ol>
+						<li class="fragment fade-in-then-semi-out">Avoid simultaneous animations</li>
+						<li class="fragment fade-in-then-semi-out">Examine your animations in slow motion</li>
+						<li class="fragment fade-in-then-semi-out">Delay all animations by a fraction of a second</li>
+						<li class="fragment fade-in-then-semi-out">Don’t bind CSS animations to scroll</li>
+						<li class="fragment fade-in-then-semi-out">Combine CSS with SVGs</li>
+					</ol>
+					<aside class="notes">1. Avoid simultaneous animations
+						Animations that run smoothly in isolation may not work so well on a page alongside dozens of other animations.
+						More than two animations going at the same time is likely to cause lag. Therefore, timing your animations so that
+						they don’t all execute all at once is vital to maintaining consistent performance. This can be accomplished by
+						adding transition delays.
+						2. Examine your animations in slow motion
+						3. Delay all animations by a fraction of a second
+						Since the browser is very busy when your page begins loading, delaying all animations until a few hundred
+						milliseconds after the initial load event can make a noticeable difference in overall page performance.
+						4. Don’t bind CSS animations to scroll
+						Animations that follow the viewport as the user scrolls are not only annoying, but they also drag down the
+						performance of everything else on screen.
+						5. Combine CSS with SVGs
+						Scalable vector graphics, or SVGs, are excellent for animations since they can be scaled without degrading
+						resolution.
+					</aside>
+				</section>
+
+				<section>
+					<h2>When to Use Will-Change?</h2>
+					<pre>
+						<code class="hljs" data-trim contenteditable>
+							.element {
+								will-change: transform, opacity;
+							}
+						</code>
+					</pre>
+					<aside class="notes">If you’ve tried everything else and are still having performance problems, then you might
+						want to try adding the will-change property to your animations. As its name implies, will-change indicates that
+						an element’s properties will change so that the browser can make appropriate preparations. Since using
+						will-change consumes resources, be warned that overuse can lead to further performance problems.</aside>
+				</section>
+			</section>
+
+			<section>
+				<h2>Testing</h2>
+				<aside class="notes">Performance testing should be an ongoing process while building animations for your web app.
+					The longer you wait to identify rendering issues, the harder it becomes to pinpoint the root of the problem.
+					The developer tools for Chrome, Firefox and Safari offer a frame-by-frame breakdown of paint and render events
+					under their Network tabs. This information can help you optimize animations as you design them. If you’re using
+					Chrome, look under the Rendering tab in the DevTools console for additional features such as an FPS meter.The
+					user’s screen size has a major impact on how animations display, so be sure to test your project on multiple
+					platforms including mobile devices.
+				</aside>
+			</section>
+
+			<section>
+				<h2>Summary</h2>
+				<aside class="notes">Optimizing animations for the web is a relatively straight-forward process. Choosing engaging
+					animations that will entice new visitors to stay on your website is more challenging because you have to consider
+					your audience. In addition to tracking how your site’s technical performance affects conversions, take note of the
+					impact that web animations have on your bottom line. If your animations aren’t helping, then they are just wasting
+					resources better spent elsewhere.</aside>
+			</section>
+		</div>
+	</div>
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+		Reveal.initialize({
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
+</html>
